@@ -43,12 +43,9 @@ void KeypadInit(void)
 	//Comm.DataExchange();//Spi.SPI_exchange(Comm.Rx_buf,Comm.Tx_buf,SPI_BUFF_SIZE);
 }
 
-
+ 
 void Parse(int Packed_CMD, unsigned char* DataBuf)
-{
-
-	_TCHAR  szData[256];
-
+{ 
 		switch (Packed_CMD)
 		{
 
