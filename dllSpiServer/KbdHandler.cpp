@@ -71,9 +71,13 @@ int prevKey = 0xFF;
 int encPrev = 0;
 int encCurr= 0;
 
+int KeyPressed = 0;
+typedef int (*myTestKey) (int);
+extern myTestKey TestKeyF;
+
 void On_key_Pavlov(void)
 {
-	for(int i = 0; i<=8; ++i) //7 keys + 2 emulation encoder keys Up/Dn
+	for(int i = 0; i<=9; ++i) //7 keys + 2 emulation encoder keys Up/Dn
 	{
 		if(Comm.DataBuf[i] == BTN_CLICK)// short
 		{
@@ -81,12 +85,15 @@ void On_key_Pavlov(void)
 			{
 				prevKey = i;
 				SendKbdMsg(true, Key_translate(i));
+
+				KeyPressed = i;
 			}
 		}
 		else if(Comm.DataBuf[i] == BTN_RELEASE)
 		{
 			if(prevKey != 0xFF) //was pressed previously
 			{
+				Sleep(5);
 				SendKbdMsg(false, Key_translate(prevKey));
 				prevKey = 0xFF;
 			}
@@ -102,11 +109,11 @@ void On_key_Pavlov(void)
 	}
 
 	// Absolute position
-	encCurr = (Comm.DataBuf[9] << 8);//low byte
-	encCurr |= Comm.DataBuf[10];//low byte
+	encCurr = (Comm.DataBuf[10] << 8);//low byte
+	encCurr |= Comm.DataBuf[11];//low byte
 	if(encPrev != encCurr)
 	{
-		//DEBUGMSG(TRUE, (TEXT("SPI_DLL: encPrev = %u encCurr = %u \r\n"),  encPrev, encCurr));
+		DEBUGMSG(TRUE, (TEXT("SPI_DLL: encPrev = %u encCurr = %u \r\n"),  encPrev, encCurr));
 		
 		//if(encPrev > encCurr) {SendKbdMsg(true, Key_translate(KEY_EncDn));}
 		//if(encPrev < encCurr) {SendKbdMsg(true, Key_translate(KEY_EncUp));}
@@ -161,7 +168,11 @@ Comm.DataExchange();//Spi.SPI_exchange(Comm.Rx_buf,Comm.Tx_buf,SPI_BUFF_SIZE);
 //pervii parametr eto 0-down, 1 - up ... vtoroi et konstanta knopki takie kak :VK_F1,VK_HOME ...
 void SendKbdMsg(bool pressed, int vk)
 {
+	if(vk)
+	{
 	DEBUGMSG(TRUE, (TEXT("SPI_DLL: SendKbdMsg vk = %u state = %u \r\n"),  vk, pressed));
+	//TestKeyF(vk);
+	}
 
 	KEYBDINPUT kInp; 	//char down;
 	INPUT x1;
@@ -171,6 +182,7 @@ void SendKbdMsg(bool pressed, int vk)
 	x1.type=INPUT_KEYBOARD;
 	x1.ki=kInp;
 	SendInput(1,&x1,sizeof(INPUT));
+	
 }
 
 

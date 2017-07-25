@@ -57,6 +57,7 @@ SetThreadPriority(hSPI_Handling, THREAD_PRIORITY_TIME_CRITICAL);
 HANDLE hKbdTread = CreateThread(NULL, 0, ThreadKeybProc, (LPVOID)2, 0, &dwThreadId);  
 SetThreadPriority(hKbdTread, THREAD_PRIORITY_TIME_CRITICAL);
 
+//*
 HANDLE hGPSTread = CreateThread(NULL, 0, ThreadGPSHandling, (LPVOID)0, 0, &dwThreadId); 
 SetThreadPriority(hGPSTread, THREAD_PRIORITY_TIME_CRITICAL);
 
@@ -65,6 +66,7 @@ SetThreadPriority(hVoltTread, THREAD_PRIORITY_TIME_CRITICAL);
 
 HANDLE hAxelTempTread = CreateThread(NULL, 0, ThreadAxelTempProc, (LPVOID)2, 0, &dwThreadId); 
 SetThreadPriority(hAxelTempTread, THREAD_PRIORITY_TIME_CRITICAL);
+//*/
 }
 
 DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter)
@@ -78,13 +80,16 @@ DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter)
 	return 0;
 }
 
+myTestKey TestKeyF = NULL;
+extern int KeyPressed;
+
  void __stdcall SpiIo(int IO, int datatype, buffIO& buff) 
  {
 DBG_SHOW_FUNC;
 
 		switch (datatype)
 		{
-		case VOLT_GET_DATA: 
+		case VOLT_GET_DATA:  
 			{
 				if(IO == 1)
 				{
@@ -110,6 +115,17 @@ DBG_SHOW_FUNC;
 				{
 					DEBUGMSG(TRUE,( TEXT("SPI_DLL: AXEL_GET_DATA \r\n") ));
 					buff.AxelInfo = AxelInfo;
+				}	
+			}
+		break;
+
+		case F_KEY:
+			{
+				if(IO == 1)
+				{
+					DEBUGMSG(TRUE,( TEXT("SPI_DLL: KEY_GET_DATA \r\n") ));
+					TestKeyF = buff.testKey;
+					buff.testKey(999);
 				}	
 			}
 		break;
