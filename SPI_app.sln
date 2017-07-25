@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SPI_Client", "dllSpiServer\SPI_Client.vcproj", "{C47512BC-6988-4846-B628-6DDADEA3389F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SPI_app", "SPI_dll\SPI_app.vcproj", "{C47512BC-6988-4846-B628-6DDADEA3389F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

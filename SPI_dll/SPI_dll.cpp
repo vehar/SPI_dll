@@ -1,10 +1,10 @@
-// dllSpiServer.cpp : Defines the entry point for the DLL application.
+// SPI_dll.cpp : Defines the entry point for the DLL application.
 //
 
 #include "stdafx.h"
 #include <windows.h>
 #include <commctrl.h>
-#include "dllSpiServer.h"
+#include "SPI_dll.h"
 #include "SpiServer.h"
 
 #include "DevisePerifHandler.h"

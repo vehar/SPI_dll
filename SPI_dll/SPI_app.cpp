@@ -1,4 +1,4 @@
-// SPI_Client.cpp : Defines the entry point for the console application.
+// SPI_app.cpp : Defines the entry point for the console application.
 //
 //#include "stdafx.h"
 #include <windows.h>
