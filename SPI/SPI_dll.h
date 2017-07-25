@@ -7,7 +7,7 @@
 #define SPI_dll_API __declspec(dllimport)
 #endif
 
-#include "STM-CPU_Protocol_defs.h"
+#include "Communication_Defines.h"
 
 #define VOLT_GET_DATA	1
 #define GPS_GET_DATA	2

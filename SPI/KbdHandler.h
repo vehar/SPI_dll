@@ -13,7 +13,7 @@
 
 #include "SpiDriver.h"
 #include "Communication_DM_STM.h"
-#include "STM-CPU_Protocol_defs.h"
+#include "Communication_Defines.h"
 
 #include "Task.h"
 

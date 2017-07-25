@@ -1,3 +1,3 @@
 #pragma once
 #include <windows.h>
-#include "STM-CPU_Protocol_defs.h"
+#include "Communication_Defines.h"
