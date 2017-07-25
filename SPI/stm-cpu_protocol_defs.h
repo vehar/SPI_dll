@@ -4,14 +4,11 @@
 //STM-CPU_Protocol_defs.h
 
 /*
-
 Accepted notation:
 D_ - data (from stm to cpu. OR request from CPU to stm)
 C_ - comand (from CPU to stm)
 A_ - alarm data (from STM to cpu)
-
 */
-
 
 //COMMANDS
 
@@ -28,11 +25,15 @@ A_ - alarm data (from STM to cpu)
 #define A_DEVICE_PUT_DOWN
 #define A_DEVICE_TAKE_UP
 
+//Comands to/from STM
+#define KBD_DATA		(0x00) //
+#define VOLTAGE_DATA	(0x01) //
+#define GPS_DATA		(0x02) //
+#define AXEL_TEMP_DATA	(0x03) //
 
-#define KBD_DATA		0 //
-#define VOLTAGE_DATA	1 //
-#define GPS_DATA		2 //
-#define AXEL_TEMP_DATA		3 //
+#define ALL_INFO_DATA	(0x08) //
+#define ONE_WIRE_DATA	(0x10) //
+#define ONE_WIRE_WRITE	(0x90) //
 
 
 #define MOUSE_DATA		0x06
@@ -171,5 +172,16 @@ typedef struct struct_Axelerometer
 
 extern AxelInfoType AxelInfo;
 
+typedef struct struct_OneWire
+{
+	char StateID_1;
+	DWORD ChipID_1;
+
+	char StateID_2;
+	DWORD ChipID_2;
+
+}OneWireInfoType;
+
+extern OneWireInfoType OneWireInfo;
 
 #endif //STM_CPU_PROTOCOL_DEFS_H

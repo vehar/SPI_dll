@@ -18,6 +18,7 @@ DWORD WINAPI ThreadKeypadReinit(LPVOID lpParameter);
 DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter);
 DWORD WINAPI ThreadEncProc(LPVOID lpParameter);
 DWORD WINAPI ThreadGPSHandling(LPVOID lpParameter);
+DWORD WINAPI Thread1WProc(LPVOID lpParameter);
 //TODO: организовать двусторонный обмен между приложениями. Сейчас есть только отправка сообщений.
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -55,6 +56,8 @@ MSG Msg;
 //SetTimer(NULL,1, 500,CurrtGet);
 
 DWORD dwThreadId;
+HANDLE hSPI_Handling = CreateThread(NULL, 0, ThreadSPIHandling, (LPVOID)0, 0, &dwThreadId); 
+SetThreadPriority(hSPI_Handling, THREAD_PRIORITY_TIME_CRITICAL);
 
 HANDLE hKbdTread = CreateThread(NULL, 0, ThreadKeybProc, (LPVOID)2, 0, &dwThreadId);  
 SetThreadPriority(hKbdTread, THREAD_PRIORITY_TIME_CRITICAL);
@@ -62,10 +65,8 @@ SetThreadPriority(hKbdTread, THREAD_PRIORITY_TIME_CRITICAL);
 HANDLE hGPSTread = CreateThread(NULL, 0, ThreadGPSHandling, (LPVOID)0, 0, &dwThreadId); 
 SetThreadPriority(hGPSTread, THREAD_PRIORITY_TIME_CRITICAL);
 
-HANDLE hSPI_Handling = CreateThread(NULL, 0, ThreadSPIHandling, (LPVOID)0, 0, &dwThreadId); 
-SetThreadPriority(hSPI_Handling, THREAD_PRIORITY_TIME_CRITICAL);
-
-HANDLE hVoltTread = CreateThread(NULL, 0, ThreadVoltProc, (LPVOID)2, 0, &dwThreadId); 
+//HANDLE hVoltTread = CreateThread(NULL, 0, ThreadVoltProc, (LPVOID)2, 0, &dwThreadId); 
+HANDLE hVoltTread = CreateThread(NULL, 0, Thread1WProc, (LPVOID)2, 0, &dwThreadId); 
 SetThreadPriority(hVoltTread, THREAD_PRIORITY_TIME_CRITICAL);
 //HANDLE hCurrTread = CreateThread(NULL, 0, ThreadCurrProc, (LPVOID)2, 0, &dwThreadId); 
 //HANDLE hEncTread = CreateThread(NULL, 0, ThreadEncProc, (LPVOID)2, 0, &dwThreadId); 

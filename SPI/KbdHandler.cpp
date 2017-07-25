@@ -34,6 +34,7 @@ void On_GPS (unsigned char* DataBuf);
 void On_Axel_Temp (unsigned char* DataBuf);
 void On_temperature (unsigned char* DataBuf);
 void On_stm_temperature (unsigned char* DataBuf);
+void On_1w_data(unsigned char* DataBuf);
 //------------------------------------
 
 
@@ -48,11 +49,11 @@ void Parse(int Packed_CMD, unsigned char* DataBuf)
 { 
 		switch (Packed_CMD)
 		{
-
 		case VOLTAGE_DATA:		On_akkum_volt(DataBuf);		break;
 		case KBD_DATA:			On_key_Pavlov();			break;
 		case GPS_DATA:			On_GPS(DataBuf);			break;
 		case AXEL_TEMP_DATA:	On_Axel_Temp(DataBuf);		break;
+		case ONE_WIRE_DATA:	    On_1w_data(DataBuf);		break;
 
 		case RAW_DATA:		break;
 
@@ -142,8 +143,6 @@ return vk;
 
 
 //------------------------------------------------------------------------------
-
-
 void SPI_Handling(void)//Send cmd from gueue & recieve data
 {
 CmdThread.ReceiveElement();//get cmd from gueue
@@ -179,9 +178,7 @@ void SendKbdMsg(bool pressed, int vk)
 	x1.type=INPUT_KEYBOARD;
 	x1.ki=kInp;
 	SendInput(1,&x1,sizeof(INPUT));
-	
 }
-
 
 DWORD WINAPI ThreadKeybProc(LPVOID lpParameter)
 {
@@ -193,7 +190,6 @@ DWORD WINAPI ThreadKeybProc(LPVOID lpParameter)
 	return 0;
 }
 
-
 DWORD WINAPI ThreadGPSHandling(LPVOID lpParameter)
 {
 	while(1)
@@ -203,7 +199,6 @@ DWORD WINAPI ThreadGPSHandling(LPVOID lpParameter)
 	}
 	return 0;
 }
-
 
 DWORD WINAPI ThreadVoltProc(LPVOID lpParameter)
 {
@@ -225,7 +220,15 @@ DWORD WINAPI ThreadAxelTempProc(LPVOID lpParameter)
 	return 0;
 }
 
-
+DWORD WINAPI Thread1WProc(LPVOID lpParameter)
+{
+	while(1)
+	{
+		CmdThread.SetElement(ONE_WIRE_DATA, 0);
+		Sleep(100);
+	}
+	return 0;
+}
 //currently not used
 /*
 void On_mouse (unsigned char* DataBuf)

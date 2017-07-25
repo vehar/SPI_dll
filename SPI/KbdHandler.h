@@ -5,22 +5,17 @@
 
 #ifdef WINCE
 
-//#include "stdafx.h"
 #include <windows.h>
 #include <tchar.h>
 #include <stdio.h>
 #include <string.h>
 #include <WinIoCtl.h>
-//#include <pm.h>//WCE Power Manager
 
 #include "SpiDriver.h"
 #include "Communication_DM_STM.h"
 #include "STM-CPU_Protocol_defs.h"
 
-//#include "WndClientServer.h"//msg-s between windows
 #include "Task.h"
-
-
 
 extern Communication Comm;		//Communication protocol vs STM
 extern QueueTask CmdThread;	// Objects, that control slave threads

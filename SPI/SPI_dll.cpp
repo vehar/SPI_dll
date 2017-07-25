@@ -5,7 +5,8 @@
 #include <windows.h>
 #include <commctrl.h>
 #include "SPI_dll.h"
-#include "SpiServer.h"
+
+#include "KbdHandler.h"
 
 #include "DevisePerifHandler.h"
  
@@ -66,6 +67,9 @@ SetThreadPriority(hVoltTread, THREAD_PRIORITY_TIME_CRITICAL);
 
 HANDLE hAxelTempTread = CreateThread(NULL, 0, ThreadAxelTempProc, (LPVOID)2, 0, &dwThreadId); 
 SetThreadPriority(hAxelTempTread, THREAD_PRIORITY_TIME_CRITICAL);
+
+//HANDLE hThread1WProc = CreateThread(NULL, 0, Thread1WProc, (LPVOID)2, 0, &dwThreadId); 
+//SetThreadPriority(hThread1WProc, THREAD_PRIORITY_TIME_CRITICAL);
 //*/
 }
 

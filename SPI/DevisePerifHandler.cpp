@@ -4,8 +4,11 @@
 OnBoardParams boardParams;
 GpsInfoType GpsInfo;
 AxelInfoType AxelInfo;
+OneWireInfoType OneWireInfo;
 
 int tmp = 0;
+
+
 void On_akkum_volt (unsigned char* DataBuf)
 {
 tmp = ((DataBuf[V_IN_POS] << 8) | (DataBuf[V_IN_POS+1]));	boardParams.Akkum_V = (float)tmp/100;
@@ -144,3 +147,10 @@ void On_Axel_Temp (unsigned char* DataBuf)
 	boardParams.StmTemperature = ((DataBuf[7]<<8) | DataBuf[8]);
 }
 
+void On_1w_data(unsigned char* DataBuf)
+{
+	OneWireInfo.StateID_1 = (char)DataBuf[0];
+	OneWireInfo.ChipID_1 = (DWORD((DataBuf[1]<<24) | (DataBuf[2]<<16) | (DataBuf[3]<<8) | (DataBuf[4]<<0)));
+	OneWireInfo.StateID_2 = (char)DataBuf[29];
+	OneWireInfo.ChipID_2 = (DWORD((DataBuf[30]<<24) | (DataBuf[31]<<16) | (DataBuf[32]<<8) | (DataBuf[33]<<0)));
+}

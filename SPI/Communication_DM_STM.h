@@ -3,7 +3,6 @@
 
 #pragma once
 
-//#include <windows.h>
 #include <string.h>
 #include "SpiDriver.h"
 
