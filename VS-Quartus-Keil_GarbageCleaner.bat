@@ -7,6 +7,7 @@ del "*.obj" /f /s /a: H
 del "*.pch" /f /s /a: H
 del "*.pdb" /f /s /a: H
 del "*.idb" /f /s /a: H
+del "*.ncb" /f /s /a: H
 
 ::quartus
 del "*.ttf" /f /s /a: H
