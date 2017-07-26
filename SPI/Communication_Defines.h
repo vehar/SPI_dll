@@ -172,16 +172,5 @@ typedef struct struct_Axelerometer
 
 extern AxelInfoType AxelInfo;
 
-typedef struct struct_OneWire
-{
-	char StateID_1;
-	DWORD ChipID_1;
-
-	char StateID_2;
-	DWORD ChipID_2;
-
-}OneWireInfoType;
-
-extern OneWireInfoType OneWireInfo;
 
 #endif //STM_CPU_PROTOCOL_DEFS_H

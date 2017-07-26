@@ -1,13 +1,13 @@
 #include "DevisePerifHandler.h"
 
-
 OnBoardParams boardParams;
 GpsInfoType GpsInfo;
 AxelInfoType AxelInfo;
-OneWireInfoType OneWireInfo;
+
+OneWireInfoType OW_1;
+OneWireInfoType OW_2;
 
 int tmp = 0;
-
 
 void On_akkum_volt (unsigned char* DataBuf)
 {
@@ -149,8 +149,14 @@ void On_Axel_Temp (unsigned char* DataBuf)
 
 void On_1w_data(unsigned char* DataBuf)
 {
-	OneWireInfo.StateID_1 = (char)DataBuf[0];
-	OneWireInfo.ChipID_1 = (DWORD((DataBuf[1]<<24) | (DataBuf[2]<<16) | (DataBuf[3]<<8) | (DataBuf[4]<<0)));
-	OneWireInfo.StateID_2 = (char)DataBuf[29];
-	OneWireInfo.ChipID_2 = (DWORD((DataBuf[30]<<24) | (DataBuf[31]<<16) | (DataBuf[32]<<8) | (DataBuf[33]<<0)));
+	OW_1.SB = 0;
+	OW_2.SB = 0;
+
+	OW_1.SB = (char)DataBuf[0];
+	memcpy(OW_1.owd.ow_device.ROM_NO, DataBuf+1, ROM_SZ);
+	
+	//OW_2.StateID = (char)DataBuf[29];
+	//OW_2.ChipID = (DWORD((DataBuf[30]<<24) | (DataBuf[31]<<16) | (DataBuf[32]<<8) | (DataBuf[33]<<0)));
+
+	DEBUGMSG(TRUE,( TEXT("SPI_DLL: OW_1.SB %u - OW_2.SB %u \r\n"), OW_1.SB , OW_2.SB ));
 }

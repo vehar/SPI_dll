@@ -1,17 +1,15 @@
-
 #include "KbdHandler.h"
 #include "DevisePerifHandler.h"
 
-//вы€снить неработоспособность dll в св€зке с интерфейсом
-
 #ifdef WINCE
 
-//SpiDriver Spi;			//create spi-object
 Communication Comm;		//Communication protocol vs STM
 QueueTask CmdThread;	// Objects, that control slave threads
 
 #undef DEBUG 
  
+typedef int (*myTestKey) (int);
+extern myTestKey TestKeyF;
 
 extern int DebugOutActive;
 
@@ -27,7 +25,7 @@ int EncCNT = 0;
 
 int Key_translate(int KeyCode);
 
-void On_key_Pavlov(void);
+void On_key_Pavlov(unsigned char* buf);
 void On_mouse (unsigned char* DataBuf);//n.u.
 void On_akkum_volt (unsigned char* DataBuf);
 void On_GPS (unsigned char* DataBuf);
@@ -37,20 +35,13 @@ void On_stm_temperature (unsigned char* DataBuf);
 void On_1w_data(unsigned char* DataBuf);
 //------------------------------------
 
-
-void KeypadInit(void)
-{
-	//Comm.CmdPack(KBD_DATA);
-	//Comm.DataExchange();//Spi.SPI_exchange(Comm.Rx_buf,Comm.Tx_buf,SPI_BUFF_SIZE);
-}
-
  
 void Parse(int Packed_CMD, unsigned char* DataBuf)
 { 
 		switch (Packed_CMD)
 		{
 		case VOLTAGE_DATA:		On_akkum_volt(DataBuf);		break;
-		case KBD_DATA:			On_key_Pavlov();			break;
+		case KBD_DATA:			On_key_Pavlov(DataBuf);			break;
 		case GPS_DATA:			On_GPS(DataBuf);			break;
 		case AXEL_TEMP_DATA:	On_Axel_Temp(DataBuf);		break;
 		case ONE_WIRE_DATA:	    On_1w_data(DataBuf);		break;
@@ -70,34 +61,33 @@ int encPrev = 0;
 int encCurr= 0;
 
 int KeyPressed = 0;
-typedef int (*myTestKey) (int);
-extern myTestKey TestKeyF;
 
-void On_key_Pavlov(void)
+
+void On_key_Pavlov(unsigned char* buf)
 {
 	for(int i = 0; i<=9; ++i) //7 keys + 2 emulation encoder keys Up/Dn
 	{
-		if(Comm.DataBuf[i] == BTN_CLICK)// short
+		if(buf[i] == BTN_CLICK)// short
 		{
 			if(i != prevKey)
 			{
 				prevKey = i;
-				SendKbdMsg(true, Key_translate(i));
+				SendKbdMsg(true, Key_translate(i)); //press
 
 				KeyPressed = i;
 			}
 		}
-		else if(Comm.DataBuf[i] == BTN_RELEASE)
+		else if(buf[i] == BTN_RELEASE)
 		{
 			if(prevKey != 0xFF) //was pressed previously
 			{
 				Sleep(5);
-				SendKbdMsg(false, Key_translate(prevKey));
+				SendKbdMsg(false, Key_translate(prevKey)); //release msg
 				prevKey = 0xFF;
 			}
 		}
 
-		if(Comm.DataBuf[i] == BTN_PRESS) //long
+		if(buf[i] == BTN_PRESS) //long
 		{
 			{
 				prevKey = 0xFF;
@@ -107,8 +97,8 @@ void On_key_Pavlov(void)
 	}
 
 	// Absolute position
-	encCurr = (Comm.DataBuf[10] << 8);//low byte
-	encCurr |= Comm.DataBuf[11];//low byte
+	encCurr = (buf[10] << 8);//low byte
+	encCurr |= buf[11];//low byte
 	if(encPrev != encCurr)
 	{
 		DEBUGMSG(TRUE, (TEXT("SPI_DLL: encPrev = %u encCurr = %u \r\n"),  encPrev, encCurr));
@@ -225,7 +215,7 @@ DWORD WINAPI Thread1WProc(LPVOID lpParameter)
 	while(1)
 	{
 		CmdThread.SetElement(ONE_WIRE_DATA, 0);
-		Sleep(100);
+		Sleep(2000);
 	}
 	return 0;
 }

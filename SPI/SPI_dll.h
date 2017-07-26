@@ -35,7 +35,7 @@ union buffIO
 	GpsInfoType		GpsInfo;
 	AxelInfoType	AxelInfo;
 	myTestKey		testKey; 
-	OneWireInfoType OneWireInfo;
+	//OneWireInfoType OneWireInfo;
 };
 
 extern "C"

@@ -59,7 +59,9 @@ int Communication::PackedCorrect(unsigned char* Packed)
 {
 	static int Header_fail_cnt = 0;
 	static int XOR_fail_cnt = 0;
+
 	static int success_cnt = 0;
+	static int fail_cnt = 0;
 
 	int result = 0;
 
@@ -81,9 +83,9 @@ int Communication::PackedCorrect(unsigned char* Packed)
 			return 0;
 		}
 		success_cnt++;
-		if(success_cnt == 500) //debug
+		if(success_cnt == 100) //debug
 		{
-while(0);
+			while(0){Sleep(0);};
 		}
 		result = 1;
 	}
@@ -92,10 +94,15 @@ while(0);
 		//printf("SPI_invalid start %d\n", SPI_Rx_buf[0] ); 
 		 RxBufClear();
 		 Header_fail_cnt++;
-		 if(Header_fail_cnt == 500) //debug
+		 if(Header_fail_cnt == 100) //debug
 		{
-			while(1){Sleep(1000);};
+			while(0){Sleep(0);};
 		} 
+		 if((Header_fail_cnt%2) == 0)
+		 {
+			 fail_cnt = XOR_fail_cnt + Header_fail_cnt;
+			 DEBUGMSG(TRUE, (TEXT("SPI_DLL: PACK_ERR! FAILED = %u SUCCESSED = %u \r\n"),  fail_cnt, success_cnt));
+		 }
 		 result = 0;
 	}
 return result;

@@ -46,11 +46,7 @@ printf("2\n");
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-
-KeypadInit();
-
 MSG Msg;
-
 
 //SetTimer(NULL,0,1000,VoltGet);
 //SetTimer(NULL,1, 500,CurrtGet);
@@ -62,8 +58,8 @@ SetThreadPriority(hSPI_Handling, THREAD_PRIORITY_TIME_CRITICAL);
 HANDLE hKbdTread = CreateThread(NULL, 0, ThreadKeybProc, (LPVOID)2, 0, &dwThreadId);  
 SetThreadPriority(hKbdTread, THREAD_PRIORITY_TIME_CRITICAL);
 
-HANDLE hGPSTread = CreateThread(NULL, 0, ThreadGPSHandling, (LPVOID)0, 0, &dwThreadId); 
-SetThreadPriority(hGPSTread, THREAD_PRIORITY_TIME_CRITICAL);
+//HANDLE hGPSTread = CreateThread(NULL, 0, ThreadGPSHandling, (LPVOID)0, 0, &dwThreadId); 
+//SetThreadPriority(hGPSTread, THREAD_PRIORITY_TIME_CRITICAL);
 
 //HANDLE hVoltTread = CreateThread(NULL, 0, ThreadVoltProc, (LPVOID)2, 0, &dwThreadId); 
 HANDLE hVoltTread = CreateThread(NULL, 0, Thread1WProc, (LPVOID)2, 0, &dwThreadId); 
@@ -92,16 +88,6 @@ DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter)
 	{
 	SPI_Handling();
 	Sleep(25); 
-	}
-	return 0;
-}
-
-DWORD WINAPI ThreadKeypadReinit(LPVOID lpParameter)
-{
-	while(1)
-	{
-		KeypadInit();
-		Sleep(500);
 	}
 	return 0;
 }
