@@ -1,17 +1,17 @@
 // SPI_app.cpp : Defines the entry point for the console application.
 //
 //#include "stdafx.h"
-#include <windows.h>
-#include <tchar.h>
-#include <stdio.h>
-#include <memory.h> 
-#include <string.h>
+//#include <windows.h>
+//#include <tchar.h>
+//#include <stdio.h>
+//#include <memory.h> 
+//#include <string.h>
 #include "KbdHandler.h"
-#include <winbase.h>
-#include <WinIoCtl.h>
-#include "spi.h"
+//#include <winbase.h>
+//#include <WinIoCtl.h>
+//#include "spi.h"
 
-#include <time.h>
+//#include <time.h>
 
 
 DWORD WINAPI ThreadKeypadReinit(LPVOID lpParameter);
@@ -19,10 +19,8 @@ DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter);
 DWORD WINAPI ThreadEncProc(LPVOID lpParameter);
 DWORD WINAPI ThreadGPSHandling(LPVOID lpParameter);
 DWORD WINAPI Thread1WProc(LPVOID lpParameter);
-//TODO: организовать двусторонный обмен между приложениями. Сейчас есть только отправка сообщений.
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-/* Functions in your dll. */
 HANDLE g_hTimer;
  
 VOID CALLBACK TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent,DWORD dwTime)

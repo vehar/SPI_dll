@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <string.h>
+//#include <string.h>
 #include "SpiDriver.h"
 
 #define SPI_BUFF_SIZE 64 //rx-tx primary buff
