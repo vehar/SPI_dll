@@ -1,18 +1,6 @@
 // SPI_app.cpp : Defines the entry point for the console application.
 //
-//#include "stdafx.h"
-//#include <windows.h>
-//#include <tchar.h>
-//#include <stdio.h>
-//#include <memory.h> 
-//#include <string.h>
 #include "KbdHandler.h"
-//#include <winbase.h>
-//#include <WinIoCtl.h>
-//#include "spi.h"
-
-//#include <time.h>
-
 
 DWORD WINAPI ThreadKeypadReinit(LPVOID lpParameter);
 DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter);
@@ -64,7 +52,6 @@ HANDLE hVoltTread = CreateThread(NULL, 0, Thread1WProc, (LPVOID)2, 0, &dwThreadI
 SetThreadPriority(hVoltTread, THREAD_PRIORITY_TIME_CRITICAL);
 //HANDLE hCurrTread = CreateThread(NULL, 0, ThreadCurrProc, (LPVOID)2, 0, &dwThreadId); 
 //HANDLE hEncTread = CreateThread(NULL, 0, ThreadEncProc, (LPVOID)2, 0, &dwThreadId); 
-
 
 	while(1)
 	{

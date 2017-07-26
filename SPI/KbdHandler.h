@@ -4,13 +4,6 @@
 #pragma once
 
 #ifdef WINCE
-
-//#include <windows.h>
-//#include <tchar.h>
-//#include <stdio.h>
-//#include <string.h>
-//#include <WinIoCtl.h>
-//#include "SpiDriver.h"
 #include "Communication_DM_STM.h"
 #include "Communication_Defines.h"
 
