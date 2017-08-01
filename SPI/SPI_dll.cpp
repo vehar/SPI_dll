@@ -84,6 +84,56 @@ DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter)
 	return 0;
 }
 
+DWORD WINAPI ThreadKeybProc(LPVOID lpParameter)
+{
+	while(1)
+	{
+		CmdThread.SetElement(KBD_DATA);
+		Sleep(200);
+	}
+	return 0;
+}
+
+DWORD WINAPI ThreadGPSHandling(LPVOID lpParameter)
+{
+	while(1)
+	{
+		CmdThread.SetElement(GPS_DATA);		
+		Sleep(1000);
+	}
+	return 0;
+}
+
+DWORD WINAPI ThreadVoltProc(LPVOID lpParameter)
+{
+	while(1)
+	{
+		CmdThread.SetElement(VOLTAGE_DATA, 0);
+		Sleep(700);
+	}
+	return 0;
+}
+
+DWORD WINAPI ThreadAxelTempProc(LPVOID lpParameter)
+{
+	while(1)
+	{
+		CmdThread.SetElement(AXEL_TEMP_DATA, 0);
+		Sleep(1000);
+	}
+	return 0;
+}
+
+DWORD WINAPI Thread1WProc(LPVOID lpParameter)
+{
+	while(1)
+	{
+		CmdThread.SetElement(ONE_WIRE_DATA, 0);
+		Sleep(2000);
+	}
+	return 0;
+}
+
 myTestKey TestKeyF = NULL;
 extern int KeyPressed;
 
@@ -122,6 +172,17 @@ DBG_SHOW_FUNC;
 				}	
 			}
 		break;
+
+		case BP_ID_GET_DATA:
+			{
+				if(IO == 1)
+				{
+					DEBUGMSG(TRUE,( TEXT("SPI_DLL: BPEP_ID_GET_DATA \r\n") ));
+					buff.AxelInfo = AxelInfo;
+				}	
+			}
+		break;
+
 
 		case F_KEY:
 			{

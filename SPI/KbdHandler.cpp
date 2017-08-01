@@ -131,14 +131,49 @@ int vk = 0;
 return vk;
 }
 
-
+int headerShift_f = 0;
 //------------------------------------------------------------------------------
 void SPI_Handling(void)//Send cmd from gueue & recieve data
 {
+	
+
 CmdThread.ReceiveElement();//get cmd from gueue
 
 Comm.CmdPack(CmdThread.GetCmd());
 Comm.DataExchange();//Spi.SPI_exchange(Comm.Rx_buf,Comm.Tx_buf,SPI_BUFF_SIZE);
+
+//search header
+for(int i = 0; i < SPI_BUFF_SIZE-20; i++)
+{
+	if(Comm.Rx_buf[i] != START_BYTE)
+	{
+		headerShift_f = 1;
+		continue;
+	}
+	else
+	{
+		if(headerShift_f)// shifting was detected
+		{
+			for (int j = 0; j < SPI_BUFF_SIZE-20-i; j++)
+			{
+			Comm.Rx_buf[j] = Comm.Rx_buf[j+i];
+			}
+			headerShift_f = 0;
+			break;
+		}
+		else
+		{
+			headerShift_f = 0;
+			while(0); //header pos = 0;
+		}
+	}
+}
+
+if(headerShift_f) 
+{
+	//DEBUGMSG(TRUE, (TEXT("SPI_DLL: communication FAILED \r\n")));	
+	return;
+}
 
 //Check packet
 	if((Comm.PackedCorrect(Comm.Rx_buf)) != 1)//if packed incorrect - exit
@@ -158,7 +193,6 @@ void SendKbdMsg(bool pressed, int vk)
 	{
 	DEBUGMSG(TRUE, (TEXT("SPI_DLL: SendKbdMsg vk = %u state = %u \r\n"),  vk, pressed));
 	//TestKeyF(vk);
-	}
 
 	KEYBDINPUT kInp; 	//char down;
 	INPUT x1;
@@ -167,58 +201,10 @@ void SendKbdMsg(bool pressed, int vk)
 	kInp.dwFlags = ((pressed == true) ? 0 : KEYEVENTF_KEYUP);
 	x1.type=INPUT_KEYBOARD;
 	x1.ki=kInp;
-	SendInput(1,&x1,sizeof(INPUT));
+//	SendInput(1,&x1,sizeof(INPUT));
+	}
 }
 
-DWORD WINAPI ThreadKeybProc(LPVOID lpParameter)
-{
-	while(1)
-	{
-		CmdThread.SetElement(KBD_DATA);
-		Sleep(200);
-	}
-	return 0;
-}
-
-DWORD WINAPI ThreadGPSHandling(LPVOID lpParameter)
-{
-	while(1)
-	{
-		CmdThread.SetElement(GPS_DATA);		
-		Sleep(1000);
-	}
-	return 0;
-}
-
-DWORD WINAPI ThreadVoltProc(LPVOID lpParameter)
-{
-	while(1)
-	{
-		CmdThread.SetElement(VOLTAGE_DATA, 0);
-		Sleep(700);
-	}
-	return 0;
-}
-
-DWORD WINAPI ThreadAxelTempProc(LPVOID lpParameter)
-{
-	while(1)
-	{
-		CmdThread.SetElement(AXEL_TEMP_DATA, 0);
-		Sleep(1000);
-	}
-	return 0;
-}
-
-DWORD WINAPI Thread1WProc(LPVOID lpParameter)
-{
-	while(1)
-	{
-		CmdThread.SetElement(ONE_WIRE_DATA, 0);
-		Sleep(2000);
-	}
-	return 0;
-}
 //currently not used
 /*
 void On_mouse (unsigned char* DataBuf)

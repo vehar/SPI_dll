@@ -32,3 +32,10 @@ typedef struct {
 }OneWireInfoType;
 
 
+typedef struct {
+	char SB;
+	union{
+				char da[sizeof(ow_device_t)];
+				ow_device_t ow_device;	
+			}owd;
+}BPIdInfoType;

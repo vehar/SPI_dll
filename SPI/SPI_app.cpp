@@ -1,28 +1,14 @@
 // SPI_app.cpp : Defines the entry point for the console application.
 //
-//#include "stdafx.h"
-#include <windows.h>
-#include <tchar.h>
-#include <stdio.h>
-#include <memory.h> 
-#include <string.h>
 #include "KbdHandler.h"
-#include <winbase.h>
-#include <WinIoCtl.h>
-#include "spi.h"
-
-#include <time.h>
-
 
 DWORD WINAPI ThreadKeypadReinit(LPVOID lpParameter);
 DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter);
 DWORD WINAPI ThreadEncProc(LPVOID lpParameter);
 DWORD WINAPI ThreadGPSHandling(LPVOID lpParameter);
 DWORD WINAPI Thread1WProc(LPVOID lpParameter);
-//TODO: организовать двусторонный обмен между приложениями. Сейчас есть только отправка сообщений.
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-/* Functions in your dll. */
 HANDLE g_hTimer;
  
 VOID CALLBACK TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent,DWORD dwTime)
@@ -67,7 +53,6 @@ SetThreadPriority(hVoltTread, THREAD_PRIORITY_TIME_CRITICAL);
 //HANDLE hCurrTread = CreateThread(NULL, 0, ThreadCurrProc, (LPVOID)2, 0, &dwThreadId); 
 //HANDLE hEncTread = CreateThread(NULL, 0, ThreadEncProc, (LPVOID)2, 0, &dwThreadId); 
 
-
 	while(1)
 	{
 	Sleep(1000); 
@@ -88,6 +73,56 @@ DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter)
 	{
 	SPI_Handling();
 	Sleep(25); 
+	}
+	return 0;
+}
+
+DWORD WINAPI ThreadKeybProc(LPVOID lpParameter)
+{
+	while(1)
+	{
+		CmdThread.SetElement(KBD_DATA);
+		Sleep(200);
+	}
+	return 0;
+}
+
+DWORD WINAPI ThreadGPSHandling(LPVOID lpParameter)
+{
+	while(1)
+	{
+		CmdThread.SetElement(GPS_DATA);		
+		Sleep(1000);
+	}
+	return 0;
+}
+
+DWORD WINAPI ThreadVoltProc(LPVOID lpParameter)
+{
+	while(1)
+	{
+		CmdThread.SetElement(VOLTAGE_DATA, 0);
+		Sleep(700);
+	}
+	return 0;
+}
+
+DWORD WINAPI ThreadAxelTempProc(LPVOID lpParameter)
+{
+	while(1)
+	{
+		CmdThread.SetElement(AXEL_TEMP_DATA, 0);
+		Sleep(1000);
+	}
+	return 0;
+}
+
+DWORD WINAPI Thread1WProc(LPVOID lpParameter)
+{
+	while(1)
+	{
+		CmdThread.SetElement(ONE_WIRE_DATA, 0);
+		Sleep(2000);
 	}
 	return 0;
 }

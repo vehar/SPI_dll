@@ -13,7 +13,7 @@
 #define GPS_GET_DATA	2
 #define AXEL_GET_DATA	3
 #define F_KEY			4
-#define OW_GET_DATA		5
+#define BP_ID_GET_DATA	5
 
 
 #define S_IN			0
@@ -35,7 +35,7 @@ union buffIO
 	GpsInfoType		GpsInfo;
 	AxelInfoType	AxelInfo;
 	myTestKey		testKey; 
-	//OneWireInfoType OneWireInfo;
+	//BPIdInfoType    BPIdInfo;
 };
 
 extern "C"

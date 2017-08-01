@@ -4,6 +4,7 @@
  spi - драйвер железа
  omap35xx_mcspi.h - необходимые дефайны для управления spi
  SpiDriver - cpp обёртка над spi
+ 
  Communication_DM_STM - сама логика протокола обмена данными
  stm-cpu_protocol_defs.h - просто хедер с протокольными дефайнами
  

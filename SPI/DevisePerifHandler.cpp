@@ -155,7 +155,8 @@ void On_1w_data(unsigned char* DataBuf)
 	OW_1.SB = (char)DataBuf[0];
 	memcpy(OW_1.owd.ow_device.ROM_NO, DataBuf+1, ROM_SZ);
 	
-	//OW_2.StateID = (char)DataBuf[29];
+	OW_2.SB = (char)DataBuf[29];
+	memcpy(OW_1.owd.ow_device.ROM_NO, DataBuf+30, ROM_SZ);
 	//OW_2.ChipID = (DWORD((DataBuf[30]<<24) | (DataBuf[31]<<16) | (DataBuf[32]<<8) | (DataBuf[33]<<0)));
 
 	DEBUGMSG(TRUE,( TEXT("SPI_DLL: OW_1.SB %u - OW_2.SB %u \r\n"), OW_1.SB , OW_2.SB ));
