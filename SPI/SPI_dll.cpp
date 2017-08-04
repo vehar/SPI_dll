@@ -53,86 +53,44 @@ void SPIinit()
 DWORD dwThreadId;
 
 HANDLE hSPI_Handling = CreateThread(NULL, 0, ThreadSPIHandling, (LPVOID)0, 0, &dwThreadId); 
-SetThreadPriority(hSPI_Handling, THREAD_PRIORITY_TIME_CRITICAL);
-
-HANDLE hKbdTread = CreateThread(NULL, 0, ThreadKeybProc, (LPVOID)2, 0, &dwThreadId);  
-SetThreadPriority(hKbdTread, THREAD_PRIORITY_TIME_CRITICAL);
-
-//*
-HANDLE hGPSTread = CreateThread(NULL, 0, ThreadGPSHandling, (LPVOID)0, 0, &dwThreadId); 
-SetThreadPriority(hGPSTread, THREAD_PRIORITY_TIME_CRITICAL);
-
-HANDLE hVoltTread = CreateThread(NULL, 0, ThreadVoltProc, (LPVOID)2, 0, &dwThreadId); 
-SetThreadPriority(hVoltTread, THREAD_PRIORITY_TIME_CRITICAL);
-
-HANDLE hAxelTempTread = CreateThread(NULL, 0, ThreadAxelTempProc, (LPVOID)2, 0, &dwThreadId); 
-SetThreadPriority(hAxelTempTread, THREAD_PRIORITY_TIME_CRITICAL);
-
-//HANDLE hThread1WProc = CreateThread(NULL, 0, Thread1WProc, (LPVOID)2, 0, &dwThreadId); 
-//SetThreadPriority(hThread1WProc, THREAD_PRIORITY_TIME_CRITICAL);
-//*/
+//SetThreadPriority(hSPI_Handling, THREAD_PRIORITY_TIME_CRITICAL);
 }
 
 DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter)
 {
-	if(DebugOutActive) printf("%s\n", __FUNCTION__ );
+	int i = 0;
 	while(1)
 	{
-		SPI_Handling();
-		Sleep(200); 
+		i++;
+		Sleep(100);
+		if(i%2 == 0)
+		{
+			SPI_Handling();
+		}
+		if(i%4 == 0)
+		{
+			//CmdThread.SetElement(KBD_DATA);
+		}
+		if(i%10 == 0)
+		{
+			CmdThread.SetElement(VOLTAGE_DATA);
+		}
+		if(i%11 == 0)
+		{
+			CmdThread.SetElement(AXEL_TEMP_DATA);	
+		}
+		if(i%12 == 0)
+		{
+			CmdThread.SetElement(ONE_WIRE_DATA);	
+		}
+		if(i%13 == 0)
+		{
+			CmdThread.SetElement(GPS_DATA);	
+		}
 	}
 	return 0;
 }
 
-DWORD WINAPI ThreadKeybProc(LPVOID lpParameter)
-{
-	while(1)
-	{
-		CmdThread.SetElement(KBD_DATA);
-		Sleep(200);
-	}
-	return 0;
-}
-
-DWORD WINAPI ThreadGPSHandling(LPVOID lpParameter)
-{
-	while(1)
-	{
-		CmdThread.SetElement(GPS_DATA);		
-		Sleep(1000);
-	}
-	return 0;
-}
-
-DWORD WINAPI ThreadVoltProc(LPVOID lpParameter)
-{
-	while(1)
-	{
-		CmdThread.SetElement(VOLTAGE_DATA, 0);
-		Sleep(700);
-	}
-	return 0;
-}
-
-DWORD WINAPI ThreadAxelTempProc(LPVOID lpParameter)
-{
-	while(1)
-	{
-		CmdThread.SetElement(AXEL_TEMP_DATA, 0);
-		Sleep(1000);
-	}
-	return 0;
-}
-
-DWORD WINAPI Thread1WProc(LPVOID lpParameter)
-{
-	while(1)
-	{
-		CmdThread.SetElement(ONE_WIRE_DATA, 0);
-		Sleep(2000);
-	}
-	return 0;
-}
 
 myTestKey TestKeyF = NULL;
 extern int KeyPressed;

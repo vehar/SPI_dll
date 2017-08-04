@@ -84,7 +84,7 @@ DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter)
 		}
 		if(i%1000 == 0)
 		{
-	//		CmdThread.SetElement(GPS_DATA);	
+			CmdThread.SetElement(GPS_DATA);	
 		}
 	}
 	return 0;
