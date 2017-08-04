@@ -33,12 +33,13 @@ void Communication::CmdPack(int cmd)// fill tx buf with cmd and other data
 TxBufClear();
 	Tx_buf[START_POS] = START_BYTE;
 	Tx_buf[COMAND_POS] = cmd;//KBD_DATA
-	Tx_buf[PACKED_SIZE_POS] = 0;
-	Tx_buf[DATA_1_POS] = cmd;
-	//Tx_buf[DATA_2_POS] = 0x00;
-	//Tx_buf[5] = XorCalc(Tx_buf,COMAND_POS, DATA_2_POS);
-	Tx_buf[4] = STOP_1_BYTE;
-	//Tx_buf[7] = STOP_2_BYTE;
+	Tx_buf[PACKED_SIZE_POS] = 4;
+	Tx_buf[DATA_1_POS] = 0; //CR ”правл€ющее слово
+	Tx_buf[DATA_1_POS+1] = 0; //STrac
+	Tx_buf[DATA_1_POS+2] = 0; //ESetH
+	Tx_buf[DATA_1_POS+3] = 0; //ESetL
+	Tx_buf[DATA_1_POS+4] = XorCalc(Tx_buf,COMAND_POS, DATA_1_POS+3);
+	Tx_buf[DATA_1_POS+5] = STOP_1_BYTE;
 }
 
 void Communication::CmdPack(int cmd, int data_cnt, char* data)// fill tx buf with cmd & cpy-ed data buf

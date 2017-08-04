@@ -135,14 +135,13 @@ int headerShift_f = 0;
 //------------------------------------------------------------------------------
 void SPI_Handling(void)//Send cmd from gueue & recieve data
 {
-	
 
 CmdThread.ReceiveElement();//get cmd from gueue
 
 Comm.CmdPack(CmdThread.GetCmd());
 Comm.DataExchange();//Spi.SPI_exchange(Comm.Rx_buf,Comm.Tx_buf,SPI_BUFF_SIZE);
-
-//search header
+/*
+//search header: TODO
 for(int i = 0; i < SPI_BUFF_SIZE-20; i++)
 {
 	if(Comm.Rx_buf[i] != START_BYTE)
@@ -174,6 +173,7 @@ if(headerShift_f)
 	//DEBUGMSG(TRUE, (TEXT("SPI_DLL: communication FAILED \r\n")));	
 	return;
 }
+*/
 
 //Check packet
 	if((Comm.PackedCorrect(Comm.Rx_buf)) != 1)//if packed incorrect - exit
