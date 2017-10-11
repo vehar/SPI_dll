@@ -56,43 +56,67 @@ void Parse(int Packed_CMD, unsigned char* DataBuf)
 		}
 }
 
+
+#define DEBUG_OUT TRUE //FALSE
+
 int prevKey = 0xFF;
 int encPrev = 0;
 int encCurr= 0;
-
-int KeyPressed = 0;
-
+int currentKey = 0;
+int timeoutToRelease = 0;
+int event_f = 0;
+int debounceTime = 0;
 
 void On_key_Pavlov(unsigned char* buf)
 {
+	timeoutToRelease++;
+	debounceTime++;
+
 	for(int i = 0; i<=9; ++i) //7 keys + 2 emulation encoder keys Up/Dn
 	{
 		if(buf[i] == BTN_CLICK)// short
 		{
 			if(i != prevKey)
 			{
+				event_f = BTN_CLICK;
+				//debounceTime = 0;
 				prevKey = i;
-				SendKbdMsg(true, Key_translate(i)); //press
-
-				KeyPressed = i;
+				currentKey = prevKey;
+				SendKbdMsg(true, Key_translate(currentKey)); //press
+				DEBUGMSG(DEBUG_OUT, (TEXT("SPI_DLL: BTN_CLICK %u \r\n"),  currentKey));
 			}
 		}
-		else if(buf[i] == BTN_RELEASE)
+
+		else if(buf[i] == BTN_PRESS) //long
+		{
+				event_f = BTN_PRESS;
+				currentKey = i;
+				timeoutToRelease = 0;
+				SendKbdMsg(true, Key_translate(currentKey));
+				DEBUGMSG(DEBUG_OUT, (TEXT("SPI_DLL: BTN_PRESS %u \r\n"),  currentKey));
+		}
+
+		if(buf[i] == BTN_RELEASE)
 		{
 			if(prevKey != 0xFF) //was pressed previously
 			{
 				Sleep(5);
+				event_f = BTN_RELEASE;
 				SendKbdMsg(false, Key_translate(prevKey)); //release msg
+				DEBUGMSG(DEBUG_OUT, (TEXT("SPI_DLL: BTN_RELEASE %u \r\n"),  prevKey));
 				prevKey = 0xFF;
 			}
 		}
+	}
 
-		if(buf[i] == BTN_PRESS) //long
+	if(event_f == BTN_PRESS) //Long press occurs
+	{
+		if(timeoutToRelease) //check if bt released after long press
 		{
-			{
-				prevKey = 0xFF;
-				SendKbdMsg(true, Key_translate(i));
-			}
+			event_f = BTN_RELEASE;
+			SendKbdMsg(false, Key_translate(currentKey)); //release msg
+			DEBUGMSG(DEBUG_OUT, (TEXT("SPI_DLL: BTN_RELEASE_LONG %u \r\n"),  currentKey));
+			prevKey = 0xFF;
 		}
 	}
 
@@ -101,7 +125,7 @@ void On_key_Pavlov(unsigned char* buf)
 	encCurr |= buf[11];//low byte
 	if(encPrev != encCurr)
 	{
-		DEBUGMSG(TRUE, (TEXT("SPI_DLL: encPrev = %u encCurr = %u \r\n"),  encPrev, encCurr));
+		DEBUGMSG(DEBUG_OUT, (TEXT("SPI_DLL: encPrev = %u encCurr = %u \r\n"),  encPrev, encCurr));
 		
 		//if(encPrev > encCurr) {SendKbdMsg(true, Key_translate(KEY_EncDn));}
 		//if(encPrev < encCurr) {SendKbdMsg(true, Key_translate(KEY_EncUp));}
@@ -120,7 +144,7 @@ int vk = 0;
 		case KEY_F2:		vk = VK_F2; break; //VK_F2
 		case KEY_F3:		vk = VK_F3; break;//VK_F3
 		case KEY_F4:		vk = VK_F4; break;
-		case KEY_F5:		vk = VK_F5; break;//VK_ESCAPE; break;
+		case KEY_F5:		vk = VK_F7; break;//VK_F5 - refreshes screen, by default & has slower reaction 
 		case KEY_Joint:		vk = VK_F6; break;	//Enter
 		case KEY_EncSw:		vk = VK_F12; break;//VK_ESCAPE //VK_RETURN
 		case KEY_EncUp:		vk = VK_UP; break;	
@@ -191,7 +215,7 @@ void SendKbdMsg(bool pressed, int vk)
 {
 	if(vk)
 	{
-	DEBUGMSG(TRUE, (TEXT("SPI_DLL: SendKbdMsg vk = %u state = %u \r\n"),  vk, pressed));
+	//DEBUGMSG(TRUE, (TEXT("SPI_DLL: SendKbdMsg vk = %u state = %u \r\n"),  vk, pressed));
 	//TestKeyF(vk);
 
 	KEYBDINPUT kInp; 	//char down;
@@ -201,7 +225,7 @@ void SendKbdMsg(bool pressed, int vk)
 	kInp.dwFlags = ((pressed == true) ? 0 : KEYEVENTF_KEYUP);
 	x1.type=INPUT_KEYBOARD;
 	x1.ki=kInp;
-//	SendInput(1,&x1,sizeof(INPUT));
+	SendInput(1,&x1,sizeof(INPUT));
 	}
 }
 

@@ -62,7 +62,7 @@ DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter)
 	while(1)
 	{
 		i++;
-		Sleep(100);
+		Sleep(10);
 		if(i%2 == 0)
 		{
 			SPI_Handling();
@@ -71,19 +71,19 @@ DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter)
 		{
 			//CmdThread.SetElement(KBD_DATA);
 		}
-		if(i%10 == 0)
+		if(i%100 == 0)
 		{
 			CmdThread.SetElement(VOLTAGE_DATA);
 		}
-		if(i%11 == 0)
+		if(i%110 == 0)
 		{
 			CmdThread.SetElement(AXEL_TEMP_DATA);	
 		}
-		if(i%12 == 0)
+		if(i%120 == 0)
 		{
 			CmdThread.SetElement(ONE_WIRE_DATA);	
 		}
-		if(i%13 == 0)
+		if(i%130 == 0)
 		{
 			CmdThread.SetElement(GPS_DATA);	
 		}

@@ -61,7 +61,7 @@ DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter)
 	while(1)
 	{
 		i++;
-		Sleep(50);
+		Sleep(10);
 		if(i%1 == 0)
 		{
 			SPI_Handling();
