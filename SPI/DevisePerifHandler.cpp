@@ -76,19 +76,19 @@ union {
 
 	if(GpsInfo.state&DATA_VALID)
 	{
-	/*printf("%s Lat: %4.4f, %s Lon: %4.4f Date: %d:%d:%d Time: %d:%d:%d\r", ((GpsInfo.state&WEST_EAST) ? "W":"E"), GpsInfo.lat, \
-											   ((GpsInfo.state&NORTH_SOUTH) ? "N":"S"), GpsInfo.lon, \
-											   GpsInfo.date.day, GpsInfo.date.month, GpsInfo.date.year, \
-											   GpsInfo.time.hour+3, GpsInfo.time.min, GpsInfo.time.sec );
- */
+		/*printf("%s Lat: %4.4f, %s Lon: %4.4f Date: %d:%d:%d Time: %d:%d:%d\r", ((GpsInfo.state&WEST_EAST) ? "W":"E"), GpsInfo.lat, \
+												   ((GpsInfo.state&NORTH_SOUTH) ? "N":"S"), GpsInfo.lon, \
+												   GpsInfo.date.day, GpsInfo.date.month, GpsInfo.date.year, \
+												   GpsInfo.time.hour+3, GpsInfo.time.min, GpsInfo.time.sec );
+	 */
 
-	//printf("Speed %d, course %d, satellite cnt %d \r", GpsInfo.speed, GpsInfo.course, (GpsInfo.state&SATELITE_CNT_MASK));
-	DEBUGMSG(TRUE, (TEXT("SPI_DLL: GPS data valid\r\n")));
+		//printf("Speed %d, course %d, satellite cnt %d \r", GpsInfo.speed, GpsInfo.course, (GpsInfo.state&SATELITE_CNT_MASK));
+		DEBUGMSG(TRUE, (TEXT("SPI_DLL: GPS data valid\r\n")));
 	}
 	else
 	{
-	//printf("Data not valid \r;");
-	DEBUGMSG(TRUE, (TEXT("SPI_DLL: GPS data NOT valid\r\n")));
+		//printf("Data not valid \r;");
+		DEBUGMSG(TRUE, (TEXT("SPI_DLL: GPS data NOT valid\r\n")));
 	}
 		GetLocalTime(&st);
 		if(abs(st.wMinute - GpsInfo.time.min)>5) //System time is different from GPS data

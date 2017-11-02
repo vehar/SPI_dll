@@ -76,20 +76,24 @@ void On_key_Pavlov(unsigned char* buf)
 	{
 		if(buf[i] == BTN_CLICK)// short
 		{
-			if(i != prevKey)
+			if((debounceTime > 5) || (i > 7))// Prevents double click EXCEPT 2 last encoder keys
 			{
-				event_f = BTN_CLICK;
-				//debounceTime = 0;
-				prevKey = i;
-				currentKey = prevKey;
-				SendKbdMsg(true, Key_translate(currentKey)); //press
-				DEBUGMSG(DEBUG_OUT, (TEXT("SPI_DLL: BTN_CLICK %u \r\n"),  currentKey));
+				if(i != prevKey)
+				{
+					event_f = BTN_CLICK;
+					debounceTime = 0;
+					prevKey = i;
+					currentKey = prevKey;
+					SendKbdMsg(true, Key_translate(currentKey)); //press
+					DEBUGMSG(DEBUG_OUT, (TEXT("SPI_DLL: BTN_CLICK %u \r\n"),  currentKey));
+				}
 			}
 		}
 
 		else if(buf[i] == BTN_PRESS) //long
 		{
 				event_f = BTN_PRESS;
+				debounceTime = 0;
 				currentKey = i;
 				timeoutToRelease = 0;
 				SendKbdMsg(true, Key_translate(currentKey));
