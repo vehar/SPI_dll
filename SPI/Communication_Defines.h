@@ -84,9 +84,12 @@ enum C_Led_State{LED_ON,LED_OFF,LED_TOGGLE};
 //-------------------------------------------
 //Key codes
 
-#define BTN_RELEASE (0)
+#define BTN_NOT_PRESSED (0)
 #define BTN_CLICK (0x0F)
 #define BTN_PRESS (0x3F)
+
+#define BTN_RELEASE BTN_NOT_PRESSED //STEST
+
 
 #define KEY_F1		 0
 #define KEY_F2		 1
