@@ -25,15 +25,16 @@ A_ - alarm data (from STM to cpu)
 #define A_DEVICE_PUT_DOWN
 #define A_DEVICE_TAKE_UP
 
-//Comands to/from STM
-#define KBD_DATA		(0x00) //
-#define VOLTAGE_DATA	(0x01) //
-#define GPS_DATA		(0x02) //
-#define AXEL_TEMP_DATA	(0x03) //
-
-#define ALL_INFO_DATA	(0x08) //
-#define ONE_WIRE_DATA	(0x10) //
-#define ONE_WIRE_WRITE	(0x90) //
+//Comands to/from STM		   // Размер пакета - прим.
+#define KBD_DATA		 (0x00) // 0x0B	Команда «Состояние кнопок»
+#define VOLTAGE_DATA	 (0x01) // 0x0C	Команда «Состояние питания»
+#define GPS_DATA		 (0x02) // 31	Команда «GPS данные»
+#define AXEL_TEMP_DATA	 (0x03) // 0x0B	Команда «Дополнительная информация»
+#define ALL_INFO_DATA	 (0x08) // 0x34	Команда «Вся текущая информация»
+#define ONE_WIRE_DATA	 (0x10) // 58	Идентификация акустического блока
+#define ONE_WIRE_WRITE	 (0x90) // 40	Программирование акустического блока
+#define ONE_WIRE_EEREAD	 (0x11) // 43	Команда «прочитать EEPROM акустического блока»
+#define ONE_WIRE_EEWRITE (0x91) // ??	Команда «записать EEPROM акустического блока»
 
 
 #define MOUSE_DATA		0x06
@@ -72,7 +73,6 @@ A_ - alarm data (from STM to cpu)
 
 
 
-
 //------------R/W STM RANDOM INTERNAL REGISTERS---------------------
 #define C_STM_R_REG //USE VERY CAREFULLY!!!
 #define C_STM_W_REG //USE VERY CAREFULLY!!!
@@ -87,9 +87,7 @@ enum C_Led_State{LED_ON,LED_OFF,LED_TOGGLE};
 #define BTN_NOT_PRESSED (0)
 #define BTN_CLICK (0x0F)
 #define BTN_PRESS (0x3F)
-
-#define BTN_RELEASE BTN_NOT_PRESSED //STEST
-
+#define BTN_RELEASED	(0x4F)
 
 #define KEY_F1		 0
 #define KEY_F2		 1
@@ -100,7 +98,6 @@ enum C_Led_State{LED_ON,LED_OFF,LED_TOGGLE};
 #define KEY_EncSw	 6
 #define KEY_EncUp	 7
 #define KEY_EncDn	 8
-
 
 
 //////////////////////////////////////////////
@@ -115,65 +112,6 @@ extern unsigned short Board_5V;
 extern unsigned short Board_140V;
 
 
-struct OnBoardParams     
-{    
-	float StmTemperature; //температура STM-a
-	float AxelTemp; //температура на акселерометре
-	float Akkum_C; //Ток аккума
-	float Akkum_V;	//Напряжение аккума
-	float Board_1_8V;
-	float Board_3_3V;
-	float Board_5V;
-	float Board_140V; 
-}; 
-
-extern OnBoardParams boardParams;
-
-
-//-------------------GPS_STATE_BITS--------------------------
-#define DATA_VALID (1<<7)
-#define WEST_EAST (1<<6)
-#define NORTH_SOUTH (1<<5)
-#define SATELITE_CNT_MASK (0x0F)
-
-
-typedef struct struct_GpsTime
-{
-	char sec;
-	char min;
-	char hour;
-}GpsTimeType;
-
-typedef struct struct_GpsDate
-{
-	char year;
-	char month;
-	char day;
-}GpsDateType;
-
-typedef struct struct_GpsInfo
-{	
-	char state;
-	float lat;
-	float lon;
-	int course;
-	int speed;
-	GpsTimeType time;
-	GpsDateType date;
-} GpsInfoType;
-
-extern GpsInfoType GpsInfo;
-
-
-typedef struct struct_Axelerometer
-{
-	int X;
-	int Y;
-	int Z;
-	int temp; //Axel Temperature
-}AxelInfoType;
-
-extern AxelInfoType AxelInfo;
 
 
 #endif //STM_CPU_PROTOCOL_DEFS_H

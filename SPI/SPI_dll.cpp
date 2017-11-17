@@ -4,11 +4,15 @@
 #include "stdafx.h"
 #include <windows.h>
 #include <commctrl.h>
+
+#include "Communication_Defines.h"
+#include "DevisePerifHandler.h"
 #include "SPI_dll.h"
 
 #include "KbdHandler.h"
-
 #include "DevisePerifHandler.h"
+#include "debug.h"
+#include "Task.h"
  
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD  ul_reason_for_call, 
@@ -137,6 +141,17 @@ DBG_SHOW_FUNC;
 				{
 					DEBUGMSG(TRUE,( TEXT("SPI_DLL: BPEP_ID_GET_DATA \r\n") ));
 					buff.AxelInfo = AxelInfo;
+				}	
+			}
+		break;
+
+		case BP_ID_SET_DATA:
+			{
+				if(IO == 0)
+				{
+					DEBUGMSG(TRUE,( TEXT("SPI_DLL: BP_ID_SET_DATA \r\n") ));
+					//buff.AxelInfo = AxelInfo;
+					Program_1w_data(NULL);
 				}	
 			}
 		break;

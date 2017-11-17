@@ -1,6 +1,7 @@
 #include "KbdHandler.h"
 #include "DevisePerifHandler.h"
-
+#include "Communication_Defines.h"
+#include "Task.h"
 #ifdef WINCE
 
 Communication Comm;		//Communication protocol vs STM
@@ -100,24 +101,25 @@ void On_key_Pavlov(unsigned char* buf)
 				DEBUGMSG(DEBUG_OUT, (TEXT("SPI_DLL: BTN_PRESS %u \r\n"),  currentKey));
 		}
 
-		if(buf[i] == BTN_RELEASE)
+		if(buf[i] == BTN_NOT_PRESSED)// BTN_RELEASED
 		{
 			if(prevKey != 0xFF) //was pressed previously
 			{
 				Sleep(5);
-				event_f = BTN_RELEASE;
+				event_f = BTN_NOT_PRESSED;
 				SendKbdMsg(false, Key_translate(prevKey)); //release msg
-				DEBUGMSG(DEBUG_OUT, (TEXT("SPI_DLL: BTN_RELEASE %u \r\n"),  prevKey));
+				DEBUGMSG(DEBUG_OUT, (TEXT("SPI_DLL: BTN_NOT_PRESSED %u \r\n"),  prevKey));
 				prevKey = 0xFF;
 			}
 		}
 	}
+	// end for
 
 	if(event_f == BTN_PRESS) //Long press occurs
 	{
 		if(timeoutToRelease) //check if bt released after long press
 		{
-			event_f = BTN_RELEASE;
+			event_f = BTN_NOT_PRESSED;
 			SendKbdMsg(false, Key_translate(currentKey)); //release msg
 			DEBUGMSG(DEBUG_OUT, (TEXT("SPI_DLL: BTN_RELEASE_LONG %u \r\n"),  currentKey));
 			prevKey = 0xFF;
@@ -163,11 +165,10 @@ int headerShift_f = 0;
 //------------------------------------------------------------------------------
 void SPI_Handling(void)//Send cmd from gueue & recieve data
 {
-
 CmdThread.ReceiveElement();//get cmd from gueue
-
 Comm.CmdPack(CmdThread.GetCmd());
 Comm.DataExchange();//Spi.SPI_exchange(Comm.Rx_buf,Comm.Tx_buf,SPI_BUFF_SIZE);
+
 /*
 //search header: TODO
 for(int i = 0; i < SPI_BUFF_SIZE-20; i++)
@@ -211,8 +212,6 @@ if(headerShift_f)
  memcpy(Comm.DataBuf, Comm.Rx_buf+DATA_1_POS, Comm.Packed_SIZE);// put data in DataBuf	
  Parse(Comm.Packed_CMD, Comm.DataBuf);
 }
-
-
 
 //pervii parametr eto 0-down, 1 - up ... vtoroi et konstanta knopki takie kak :VK_F1,VK_HOME ...
 void SendKbdMsg(bool pressed, int vk)

@@ -1,9 +1,9 @@
-#include "SpiDriver.h"
-
 #include <windows.h>
 #include <WinIoCtl.h>
+#include "SpiDriver.h"
 #include "spi.h"
 #include "omap35xx_mcspi.h"
+#include "debug.h"
 
 HANDLE SpiDriver::hDrv = 0;
 

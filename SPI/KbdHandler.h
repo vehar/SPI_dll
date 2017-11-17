@@ -4,15 +4,13 @@
 #pragma once
 
 #ifdef WINCE
-#include "Communication_DM_STM.h"
-#include "Communication_Defines.h"
 
+#include "Communication_DM_STM.h"
 #include "Task.h"
 
 extern Communication Comm;		//Communication protocol vs STM
 extern QueueTask CmdThread;	// Objects, that control slave threads
 
-void               KeypadInit();
 
 extern int DataRefreshed_Flag;
 extern int KeyStateFlag;

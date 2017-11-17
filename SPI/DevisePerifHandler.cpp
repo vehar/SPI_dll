@@ -1,4 +1,6 @@
+#include <windows.h>
 #include "DevisePerifHandler.h"
+#include "Communication_Defines.h"
 
 OnBoardParams boardParams;
 GpsInfoType GpsInfo;
@@ -9,12 +11,46 @@ OneWireInfoType OW_2;
 
 int tmp = 0;
 
+#ifdef false
+int Key_translate(int KeyCode);
+
+void On_key_Pavlov(unsigned char* buf);
+void On_mouse (unsigned char* DataBuf);//n.u.
+void On_akkum_volt (unsigned char* DataBuf);
+void On_GPS (unsigned char* DataBuf);
+void On_Axel_Temp (unsigned char* DataBuf);
+void On_temperature (unsigned char* DataBuf);
+void On_stm_temperature (unsigned char* DataBuf);
+void On_1w_data(unsigned char* DataBuf);
+
+void Parse(int Packed_CMD, unsigned char* DataBuf)
+{ 
+		switch (Packed_CMD)
+		{
+		case VOLTAGE_DATA:		On_akkum_volt(DataBuf);		break;
+		case KBD_DATA:			On_key_Pavlov(DataBuf);			break;
+		case GPS_DATA:			On_GPS(DataBuf);			break;
+		case AXEL_TEMP_DATA:	On_Axel_Temp(DataBuf);		break;
+		case ONE_WIRE_DATA:	    On_1w_data(DataBuf);		break;
+
+		case RAW_DATA:		break;
+
+		default:// All other data redirect to upper (application) level
+//			memcpy(szData, Comm.Rx_buf+COMAND_POS, Comm.Packed_SIZE/*STRLEN(DataBuf+1)*2*/);// put data in DataBuf
+//			TransferData(WM_DISPLAY_TEXT,szData,STRLEN(szData)*2);
+//			printf("Invalid Packed_CMD %d\n", Packed_CMD);  
+			break;
+		}
+}
+#endif
+
 void On_akkum_volt (unsigned char* DataBuf)
 {
+/*Напряжения указаны в 0.01 вольта, к примеру: 5.53В=553. Кроме 140В. 140В – указаны в 0.1 в. Ток указан в миллиамперах.*/
 tmp = ((DataBuf[V_IN_POS] << 8) | (DataBuf[V_IN_POS+1]));	boardParams.Akkum_V = (float)tmp/100;
 tmp = ((DataBuf[A_IN_POS] << 8) | (DataBuf[A_IN_POS+1]));	boardParams.Akkum_C = (float)tmp/100;
 
-tmp = ((DataBuf[V_140_POS] << 8) | (DataBuf[V_140_POS+1])); boardParams.Board_140V = (float)tmp/100;
+tmp = ((DataBuf[V_140_POS] << 8) | (DataBuf[V_140_POS+1])); boardParams.Board_140V = (float)tmp/10;
 tmp = ((DataBuf[V_5_POS] << 8) | (DataBuf[V_5_POS+1]));		boardParams.Board_5V = (float)tmp/100;
 tmp = ((DataBuf[V_3_3_POS] << 8) | (DataBuf[V_3_3_POS+1])); boardParams.Board_3_3V = (float)tmp/100;
 tmp = ((DataBuf[V_1_8_POS] << 8) | (DataBuf[V_1_8_POS+1])); boardParams.Board_1_8V = (float)tmp/100;
@@ -74,6 +110,8 @@ union {
 	GpsInfo.date.month = DataBuf[16];
 	GpsInfo.date.day = DataBuf[17];
 
+	GpsInfo._3D_fix = DataBuf[18];
+
 	if(GpsInfo.state&DATA_VALID)
 	{
 		/*printf("%s Lat: %4.4f, %s Lon: %4.4f Date: %d:%d:%d Time: %d:%d:%d\r", ((GpsInfo.state&WEST_EAST) ? "W":"E"), GpsInfo.lat, \
@@ -125,15 +163,18 @@ union {
 
 void On_Axel_Temp (unsigned char* DataBuf)
 {
-	
-	AxelInfo.temp = ((DataBuf[9]<<8) | DataBuf[10]);
 	AxelInfo.X = (int((DataBuf[0]<<8) | DataBuf[1]));
 	AxelInfo.Y = (int((DataBuf[2]<<8) | DataBuf[3]));
 	AxelInfo.Z = (int((DataBuf[4]<<8) | DataBuf[5]));
 	
+	boardParams.InRestMinute = DataBuf[6]; //Время без движения в мин
+	boardParams.StmTemperature = ((DataBuf[7]<<8) | DataBuf[8]);
+	AxelInfo.temp = ((DataBuf[9]<<8) | DataBuf[10]);
+
 	if((AxelInfo.X == 0)/* && (AxelInfo.Y == 0)*/ && (AxelInfo.Y == 128))// axel not present
 	{
-	//for test without axel
+#pragma warning !!!
+	//only for test without axel
 	SYSTEMTIME st;
 	GetLocalTime(&st);
 
@@ -144,7 +185,6 @@ void On_Axel_Temp (unsigned char* DataBuf)
 	}
 
 	boardParams.AxelTemp = AxelInfo.temp;
-	boardParams.StmTemperature = ((DataBuf[7]<<8) | DataBuf[8]);
 }
 
 void On_1w_data(unsigned char* DataBuf)
@@ -154,10 +194,32 @@ void On_1w_data(unsigned char* DataBuf)
 
 	OW_1.SB = (char)DataBuf[0];
 	memcpy(OW_1.owd.ow_device.ROM_NO, DataBuf+1, ROM_SZ);
+	OW_1.owd.ow_device.tipe = DataBuf[9];
+	
+	//TODO:
+/*
+	SN1 Заводской номер 1го блока ст.б
+	SN1 Заводской номер 1го блока мл.б
+	Дата производства (год) 
+	Дата производства (месяц)
+	Дата производства (день)
+	Срок эксплуатации (месяцев)
+	Дата ввода в эксплуатацию (год)
+	Дата ввода в эксплуатацию (месяц)
+	Дата ввода в эксплуатацию (день)
+	… Некоторые параметры (не решили)пока 10байт
+*/
 	
 	OW_2.SB = (char)DataBuf[29];
 	memcpy(OW_1.owd.ow_device.ROM_NO, DataBuf+30, ROM_SZ);
 	//OW_2.ChipID = (DWORD((DataBuf[30]<<24) | (DataBuf[31]<<16) | (DataBuf[32]<<8) | (DataBuf[33]<<0)));
 
 	DEBUGMSG(TRUE,( TEXT("SPI_DLL: OW_1.SB %u - OW_2.SB %u \r\n"), OW_1.SB , OW_2.SB ));
+}
+
+//Команда «Программирование акустического блока»
+void Program_1w_data(OneWireInfoType* OW_info)
+{
+// TODO:
+
 }

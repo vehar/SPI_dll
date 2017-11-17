@@ -1,4 +1,4 @@
-
+#include "SpiDriver.h"
 #include "Communication_DM_STM.h"
 
  unsigned char Communication::Packed_START	= 0;
@@ -72,9 +72,9 @@ int Communication::PackedCorrect(unsigned char* Packed)
 	Packed_XOR		= Packed[DATA_1_POS + Packed_SIZE];
 
 	//printf("St = %X, Cmd:%d, Size:%d, XOR:%d \n",Packed_START, Packed_CMD, Packed_SIZE, Packed_XOR );
-	if(Packed_START == START_BYTE 
-	&& Packed[DATA_1_POS + Packed_SIZE +1] == STOP_1_BYTE 
-	/*&&  Packed[DATA_1_POS + Packed_SIZE +2] == STOP_2_BYTE*/
+	if(	(Packed_START == START_BYTE)	&& 
+		(Packed[DATA_1_POS + Packed_SIZE +1] == STOP_1_BYTE)
+	/*&&(Packed[DATA_1_POS + Packed_SIZE +2] == STOP_2_BYTE)*/
 	) 
 	{//if packed valid - check XOR
 		Real_XOR		= XorCalc(Packed,COMAND_POS,Packed_SIZE+2);//Код комманды ^ Кол-во байт ^ Данные = XOR

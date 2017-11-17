@@ -1,6 +1,8 @@
 // SPI_app.cpp : Defines the entry point for the console application.
 //
+#include "Task.h"
 #include "KbdHandler.h"
+#include "Communication_Defines.h"
 
 DWORD WINAPI ThreadSPIHandling(LPVOID lpParameter);
 

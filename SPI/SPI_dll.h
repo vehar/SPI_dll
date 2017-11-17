@@ -7,13 +7,13 @@
 #define SPI_dll_API __declspec(dllimport)
 #endif
 
-#include "Communication_Defines.h"
-
+//DLL communication defs (not STM)
 #define VOLT_GET_DATA	1
 #define GPS_GET_DATA	2
 #define AXEL_GET_DATA	3
 #define F_KEY			4
 #define BP_ID_GET_DATA	5
+#define BP_ID_SET_DATA	6
 
 
 #define S_IN			0
